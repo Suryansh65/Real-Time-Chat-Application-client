@@ -49,7 +49,7 @@ const LoginPage = () => {
         {currState === "Sign up" && isDataSubmitted && (
           <textarea
             rows={4}
-            className="p-2 w-[250px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="p-2 w-[300px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Please provide a short bio..."
             required
             onChange={(e) => setBio(e.target.value)}
@@ -76,48 +76,48 @@ const LoginPage = () => {
               value={password}
               className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-
-            <button
-              className="py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer"
-              type="submit"
-            >
-              {currState === "Sign up" ? "Create Account" : "Login Now"}
-            </button>
-            {/* privacy policy and checkbox */}
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <input type="checkbox" />
-              <p>Agree to the terms of use & privacy policy.</p>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              {currState === "Sign up" ? (
-                <p className="text-sm text-gray-600">
-                  Already have an account?
-                  <span
-                    className="font-medium text-violet-500 cursor-pointer"
-                    onClick={() => {
-                      setCurrState("Login");
-                      setIsDataSubmitted(false);
-                    }}
-                  >
-                    Login here
-                  </span>
-                </p>
-              ) : (
-                <p className="text-sm text-gray-600">
-                  Create an Account?
-                  <span
-                    className="font-medium text-violet-500 cursor-pointer"
-                    onClick={() => {
-                      setCurrState("Sign up");
-                    }}
-                  >
-                    Click here
-                  </span>
-                </p>
-              )}
-            </div>
           </>
         )}
+
+        <button
+          className="py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer"
+          type="submit"
+        >
+          {currState === "Sign up" ? "Create Account" : "Login Now"}
+        </button>
+        {/* privacy policy and checkbox */}
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <input type="checkbox" />
+          <p>Agree to the terms of use & privacy policy.</p>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          {currState === "Sign up" ? (
+            <p className="text-sm text-gray-600">
+              Already have an account?
+              <span
+                className="font-medium text-violet-500 cursor-pointer"
+                onClick={() => {
+                  setCurrState("Login");
+                  setIsDataSubmitted(false);
+                }}
+              >
+                Login here
+              </span>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-600">
+              Create an Account?
+              <span
+                className="font-medium text-violet-500 cursor-pointer"
+                onClick={() => {
+                  setCurrState("Sign up");
+                }}
+              >
+                Click here
+              </span>
+            </p>
+          )}
+        </div>
       </form>
     </div>
   );
