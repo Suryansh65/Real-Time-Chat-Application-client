@@ -1,16 +1,50 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import assets from "../assets/assets";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
+  const { authUser, updateProfile } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
-  const [name, setName] = useState("Suryansh Agrawal");
-  const [bio, setBio] = useState("I am using QuickChat");
+  const [name, setName] = useState(authUser.fullName);
+  const [bio, setBio] = useState(authUser.bio);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/");
+    setLoading(true);
+    try {
+      if (!selectedImage) {
+        await updateProfile({ fullName: name, bio });
+        navigate("/");
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedImage);
+        reader.onload = async () => {
+          try {
+            const base64Image = reader.result;
+            await updateProfile({
+              profilePic: base64Image,
+              fullName: name,
+              bio,
+            });
+            navigate("/");
+          } catch (err) {
+            console.error("Error while updating profile", err);
+          } finally {
+            setLoading(false);
+          }
+        };
+        return;
+      }
+    } catch (err) {
+      console.error("Error while updating profile", err);
+    } finally {
+      if (!selectedImage) setLoading(false);
+    }
   };
   return (
     <div>
@@ -63,14 +97,46 @@ const ProfilePage = () => {
             {/* button to submit the form */}
             <button
               type="submit"
-              className="bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer"
+              disabled={loading}
+              className={`bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Save
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-6 w-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                  {/* <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
+                  </svg> */}
+                  Saving...
+                </div>
+              ) : (
+                "Save"
+              )}
             </button>
           </form>
           <img
-            className="max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10"
-            src={assets.logo_icon}
+            className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
+              selectedImage && "rounded-full"
+            }`}
+            src={authUser?.profilePic || assets.logo_icon}
             alt="profile_logo_icon"
           />
         </div>
